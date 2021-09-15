@@ -1,0 +1,61 @@
+#!/usr/bin/python
+# This script uesed to filter punctuatin  and split then save to result
+# eg: cat text | python3 local/wer_output_filter_py3 > text-filter
+
+import sys, re
+
+# en-ch
+space1 = re.compile(r"([A-Za-z]+)([\u4e00-\u9fa5]+)")
+# ch-en
+space2 = re.compile(r"([\u4e00-\u9fa5]+)([A-Za-z]+)")
+# ch-ch
+space3 = re.compile(r"([\u4e00-\u9fa5])")
+
+def get_word_list(sentence):
+    """uesd to split ch char and en words
+    :params: sentence
+    :return: str after split
+    """
+    sentence = space1.sub(r'\1 \2', sentence)
+    sentence = space2.sub(r"\1 \2", sentence)
+    sentence = space3.split(sentence)
+    sentence = " ".join(sentence)
+    wordlist = [i for i in sentence.split()]
+    return " ".join(wordlist)
+    
+for line in sys.stdin:
+    if "\t" in line:
+        line_item = line.rstrip().split("\t", 1)
+        utt = line_item[0]
+        if len(line_item) == 2:
+            content = line_item[1].rstrip()
+        else:
+            content = " "
+    elif " " in line:
+        line_item = line.rstrip().split(" ", 1)
+        utt = line_item[0]
+        if len(line_item) == 2:
+            content = line_item[1].rstrip()
+        else:
+            content = " "
+    else:
+        line_item = line.rstrip().split(" ", 1)
+        utt = line_item[0]
+        content = " "
+
+    # stage 1: filter punctuatin
+    # filter chinese punctuatin list
+    chinese_punctuatin_list = ["，", "。", "！", "？", "；", "：", "—", "}", "{", "】", "【", "……", "…", "》", "《", "、"]
+    # filter english punctuatin list
+    english_punctuatin_list = [",", ".", "<", ">", "=", "+", "-", "(", ")", "\"", "-", "?", "!", ":", ";", "[", "]", "{", "}", "#" ]
+    # special punctuatin list
+    special_punctuatin_list = []
+    # combine
+    punctuatin_list = chinese_punctuatin_list + english_punctuatin_list
+    for i in punctuatin_list:
+        content = content.replace(i, "")
+    content = content.replace("’", "'")
+
+    # stage 2: split chinese char and english words
+    new_str = get_word_list(content)    
+    print(utt + " " + new_str.upper())
