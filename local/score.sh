@@ -45,8 +45,9 @@ done
 
 
 ref_filtering_cmd="cat"
-[ -x local/wer_output_filter ] && ref_filtering_cmd="python local/wer_output_filter"
-[ -x local/wer_ref_filter ] && ref_filtering_cmd="python local/wer_ref_filter"
+#[ -x local/wer_output_filter ] && ref_filtering_cmd="python local/wer_output_filter"
+#[ -x local/wer_ref_filter ] && ref_filtering_cmd="python local/wer_ref_filter"
+[ -x local/wer_output_filter_py3 ] && ref_filtering_cmd="python3 local/wer_output_filter_py3"
 hyp_filtering_cmd="cat"
 [ -x local/wer_output_filter ] && hyp_filtering_cmd="python local/wer_output_filter"
 [ -x local/wer_hyp_filter ] && hyp_filtering_cmd="python local/wer_hyp_filter"
