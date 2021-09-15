@@ -1,9 +1,7 @@
 #!/usr/bin/env bash
-
 # Copyright 2021 Hithink RoyalFlush Information Network Co.,Ltd
 
 . ./cmd.sh
-
 
 # dev data config
 dev_data_dir=data/corpus/THS-DEV
@@ -29,9 +27,8 @@ steps/nnet3/decode.sh --stage 0 --nj 10 --cmd "$decode_cmd" \
                       --acwt 1.0 --post-decode-acwt 10.0 \
                       $dir/graph_ench ${data_test} $dir/decode_${data_test} || exit 1;
 
-
 for x in $dir/decode_*; do [ -d $x ] && grep WER $x/wer_* | utils/best_wer.sh; done
 
-python3 compute-mer.py $dir/decode_test/scoring_kaldi
+python3 local/compute-mer.py $dir/decode_test/scoring_kaldi
 
-echo "THS-DEV decode done"
+echo "decode done"
